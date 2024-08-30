@@ -2,8 +2,72 @@
 ## Installation
 
 ### GPU Version
+```text
 bash docker.sh
+```
 
+## Code
+```
+├── code
+│   └── cambrian
+│       ├── cambrian
+│       │   ├── model
+│       │   ├── train
+│       │   │   ├── cambrian_trainer.py
+│       │   │   ├── gcloud_rsync_callback.py
+│       │   │   ├── llama_flash_attn_monkey_patch.py
+│       │   │   ├── llama_xformers_attn_monkey_patch.py
+│       │   │   ├── train_fsdp.py
+│       │   │   ├── train_mem.py
+│       │   │   ├── train_tpu.py
+│       │   │   ├── train_xformers.py
+│       │   │   └── wandb_nan_alert_callback.py
+│       │   └── utils.py
+│       ├── filter.py
+│       ├── fsdp_config.json
+│       ├── inference.py
+│       ├── integration_utils.py
+│       ├── pre
+│       │   ├── check_euro.py
+│       │   ├── deal_LLD_instruct.py
+│       │   ├── deal_MAMA-MIA.py
+│       │   ├── deal_euro.py
+│       │   ├── deal_euro2.py
+│       │   ├── deal_eurorad.sh
+│       │   ├── deal_eurorad2.sh
+│       │   ├── deal_medtrinity.py
+│       │   ├── deal_pmc.py
+│       │   ├── deal_pmc_oa.py
+│       │   ├── deal_quilt.py
+│       │   ├── deeplesion_instruct.py
+│       │   ├── download_rad.py
+│       │   ├── eurorad.json
+│       │   ├── eurorad_img_download.py
+│       │   ├── gpt4_pre.sh
+│       │   ├── pmc_instruct.py
+│       │   ├── pre_LLD.py
+│       │   ├── pre_MAMA-MIA.py
+│       │   ├── pre_PadChest.py
+│       │   ├── rad_instruct.py
+│       │   ├── radiopaedia_img_download.py
+│       │   └── sample_pmc.py
+│       ├── pyproject.toml
+│       ├── scripts
+│       │   ├── cambrian
+│       │   │   ├── finetune_cambrian_8b.sh
+│       │   │   └── pretrain_cambrian_8b.sh
+│       │   ├── infra
+│       │   │   ├── create_cambrian_tpu.sh
+│       │   │   ├── delete_suspended.bash
+│       │   │   ├── list_tpu.bash
+│       │   │   └── restart_tpu_job.sh
+│       │   ├── zero2.json
+│       │   ├── zero3.json
+│       │   └── zero3_offload.json
+│       └── transfer.py
+├── deal.py
+└── docker.sh
+```
 
 
 ## Train
@@ -18,17 +82,17 @@ Both hyperparameters used in pretraining and finetuning are provided below.
 
 | Base LLM          | Global Batch Size | Learning rate | SVA Learning Rate | Epochs | Max length |
 |-------------------|-------------------:|--------------:|------------------:|-------:|-----------:|
-| LLaMA-3 8B        | 512                | 1e-3          | 1e-4              | 1      | 2048       |
-| Vicuna-1.5 13B    | 512                | 1e-3          | 1e-4              | 1      | 2048       |
-| Hermes Yi-34B     | 1024               | 1e-3          | 1e-4              | 1      | 2048       |
+| LLaMA-3 8B        | NaN                | 1e-3          | 1e-4              | 1      | 2048       |
+| Vicuna-1.5 13B    | NaN                | 1e-3          | 1e-4              | 1      | 2048       |
+| Hermes Yi-34B     | NaN               | 1e-3          | 1e-4              | 1      | 2048       |
 
 #### 2. Instruction Tuning
 
 | Base LLM          | Global Batch Size | Learning rate | Epochs | Max length |
 |-------------------|-------------------:|--------------:|-------:|-----------:|
-| LLaMA-3 8B        | 512                | 4e-5          | 1      | 2048       |
-| Vicuna-1.5 13B    | 512                | 4e-5          | 1      | 2048       |
-| Hermes Yi-34B     | 1024               | 2e-5          | 1      | 2048       |
+| LLaMA-3 8B        | NaN                | 4e-5          | 1      | 2048       |
+| Vicuna-1.5 13B    | NaN                | 4e-5          | 1      | 2048       |
+| Hermes Yi-34B     | NaN               | 2e-5          | 1      | 2048       |
 
 For instruction finetuning, we conducted experiments to determine the optimal learning rate for our model training. Based on our findings, we recommend using the following formula to adjust your learning rate based on the availability of your device:
 
