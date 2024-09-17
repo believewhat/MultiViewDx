@@ -35,6 +35,11 @@ bash docker.sh
 │   │   ├── deal_quilt.py # Generate QA pair for Quilt datasets
 │   │   ├── deeplesion_instruct.py # Generate QA pair and caption for Deeplesion datasets
 │   │   ├── eurorad.json
+│   │   ├── deal.sh # Extract the image and caption from original PMC Data
+│   │   ├── deal2.py # Extract the image and caption from original PMC Data
+│   │   ├── untar_pmc.py # Unzip the pmc data
+│   │   ├── pmc_instruct.py # Generate the instruction tunning data for pmc data
+│   │   ├── combine_pmc.py # Find the caption and corresponding image path
 │   │   ├── gpt4_pre.sh # Parralize deal_pmc.py
 │   │   ├── pmc_instruct.py # Generate QA pair for PMC datasets
 │   │   ├── pre_LLD.py # Extract LLD datasets
