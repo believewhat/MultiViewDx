@@ -9,63 +9,48 @@ bash docker.sh
 ## Code
 ```
 ├── code
-│   └── cambrian
-│       ├── cambrian
-│       │   ├── model
-│       │   ├── train
-│       │   │   ├── cambrian_trainer.py
-│       │   │   ├── gcloud_rsync_callback.py
-│       │   │   ├── llama_flash_attn_monkey_patch.py
-│       │   │   ├── llama_xformers_attn_monkey_patch.py
-│       │   │   ├── train_fsdp.py
-│       │   │   ├── train_mem.py
-│       │   │   ├── train_tpu.py
-│       │   │   ├── train_xformers.py
-│       │   │   └── wandb_nan_alert_callback.py
-│       │   └── utils.py
-│       ├── filter.py
-│       ├── fsdp_config.json
-│       ├── inference.py
-│       ├── integration_utils.py
-│       ├── pre
-│       │   ├── check_euro.py
-│       │   ├── deal_LLD_instruct.py
-│       │   ├── deal_MAMA-MIA.py
-│       │   ├── deal_euro.py
-│       │   ├── deal_euro2.py
-│       │   ├── deal_eurorad.sh
-│       │   ├── deal_eurorad2.sh
-│       │   ├── deal_medtrinity.py
-│       │   ├── deal_pmc.py
-│       │   ├── deal_pmc_oa.py
-│       │   ├── deal_quilt.py
-│       │   ├── deeplesion_instruct.py
-│       │   ├── download_rad.py
-│       │   ├── eurorad.json
-│       │   ├── eurorad_img_download.py
-│       │   ├── gpt4_pre.sh
-│       │   ├── pmc_instruct.py
-│       │   ├── pre_LLD.py
-│       │   ├── pre_MAMA-MIA.py
-│       │   ├── pre_PadChest.py
-│       │   ├── rad_instruct.py
-│       │   ├── radiopaedia_img_download.py
-│       │   └── sample_pmc.py
-│       ├── pyproject.toml
-│       ├── scripts
-│       │   ├── cambrian
-│       │   │   ├── finetune_cambrian_8b.sh
-│       │   │   └── pretrain_cambrian_8b.sh
-│       │   ├── infra
-│       │   │   ├── create_cambrian_tpu.sh
-│       │   │   ├── delete_suspended.bash
-│       │   │   ├── list_tpu.bash
-│       │   │   └── restart_tpu_job.sh
-│       │   ├── zero2.json
-│       │   ├── zero3.json
-│       │   └── zero3_offload.json
-│       └── transfer.py
-├── deal.py
+│   ├── cambrian # cambrian package (only for train under gpu)
+│   │   ├── model # model structure code folder
+│   │   ├── train # train code folder
+│   │   │   ├── cambrian_trainer.py # cambrian's trainer function
+│   │   │   ├── train_fsdp.py # cambrian's train function by using gpu
+│   │   │   ├── train_mem.py
+│   │   │   ├── train_tpu.py # cambrian's train function by using tpu
+│   │   │   ├── train_xformers.py
+│   │   │   └── wandb_nan_alert_callback.py
+│   │   └── utils.py
+│   ├── filter.py
+│   ├── fsdp_config.json
+│   ├── inference # cambrian's inference code
+│   │   ├── cambrian # cambrian inference code (only for inference)
+│   │   ├── scripts
+│   │   │   ├── inference.sh # cambrian's inference code
+│   ├── pre
+│   │   ├── deal_LLD_instruct.py # Generate QA pair for LLD datasets
+│   │   ├── deal_MAMA-MIA.py # Generate QA pair for MAMA-MIA datasets
+│   │   ├── deal_euro.py # Generate QA pair for EURO datasets
+│   │   ├── deal_eurorad.sh # Parralize generation
+│   │   ├── deal_pmc.py # Classify PMC data and extract the medical domain data sets
+│   │   ├── deal_pmc_oa.py # Extract the medical domain data sets
+│   │   ├── deal_quilt.py # Generate QA pair for Quilt datasets
+│   │   ├── deeplesion_instruct.py # Generate QA pair and caption for Deeplesion datasets
+│   │   ├── eurorad.json
+│   │   ├── gpt4_pre.sh # Parralize deal_pmc.py
+│   │   ├── pmc_instruct.py # Generate QA pair for PMC datasets
+│   │   ├── pre_LLD.py # Extract LLD datasets
+│   │   ├── pre_MAMA-MIA.py # Extract MAMA-MIA datasets
+│   │   ├── pre_PadChest.py # Genrate caption for PadChest datasets
+│   │   ├── rad_instruct.py # Genrate caption for radiopaedia datasets
+│   │   └── sample_pmc.py
+│   ├── scripts
+│   │   ├── cambrian
+│   │   │   ├── finetune_cambrian_8b.sh # fintune script
+│   │   │   ├── pretrain_cambrian_8b.sh # pretrain script
+│   │   │   └── transfer.sh # transfer weight
+│   │   ├── zero2.json # Deepspeed config file
+│   │   ├── zero3.json # Deepspeed config file
+│   │   └── zero3_offload.json # Deepspeed config file
+│   └── transfer.py # Convert cambrian weight to huggingface weight
 └── docker.sh
 ```
 
@@ -76,7 +61,7 @@ Below is the latest training configuration for PMC-Cambrian.
 
 ### Hyperparameters
 
-Both hyperparameters used in pretraining and finetuning are provided below.
+Both hyperparameters used in pretraining and finetuning are provided below.(In cambrian paper the global batch size should be 512 but there we don't have enough GPU and TPU, hence the global batch size should be around 8 for per GPU during the pretrain stage, and the gradient_accumulation_steps should be around 4)
 
 #### 1. Visual Connector Training
 
@@ -105,7 +90,7 @@ optimal lr = base_lr * sqrt(bs / base_bs)
 
 We provide sample training scripts in:
 
-- [scripts/cambrian/pretrain_cambrian_8b.sh](code/cambrian/scripts/cambrian/pretrain_cambrian_8b.sh)
+- [scripts/cambrian/pretrain_cambrian_8b.sh](code/scripts/cambrian/pretrain_cambrian_8b.sh)
 
 
 
@@ -113,7 +98,7 @@ We provide sample training scripts in:
 
 We provide sample training scripts in:
 
-- [scripts/cambrian/finetune_cambrian_8b.sh](code/cambrian/scripts/cambrian/finetune_cambrian_8b.sh)
+- [scripts/cambrian/finetune_cambrian_8b.sh](code/scripts/cambrian/finetune_cambrian_8b.sh)
 
 
 ### Options to note:
