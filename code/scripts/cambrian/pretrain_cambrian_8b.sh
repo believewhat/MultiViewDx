@@ -1,12 +1,12 @@
 #!/bin/bash
-torchrun --master_port=12345 --nproc_per_node=8 cambrian/train/train_mem.py \
-    --model_name_or_path your model path \
+CUDA_VISIBLE_DEVICES=4,5,6,7 torchrun --master_port=12345 --nproc_per_node=4 cambrian/train/train_mem.py \
+    --model_name_or_path /home/data/30_LLaMa_model_weights_HF/Cambrian-8b/ \
     --version llama_v3 \
     --deepspeed ./scripts/zero2.json \
     --train_continue True \
-    --data_path Your data(json) Path \
-    --data_path2 You should divide your json data \
-    --image_folder Your image Path \
+    --data_path /home/data/38_Pubmed_cleaned/PMC_revise_shuffle.jsonl \
+    --data_path2 /home/data/38_Pubmed_cleaned/captions_revise \
+    --image_folder /home/data/38_Pubmed_cleaned/images2 \
     --vision_tower_aux_list '["siglip/CLIP-ViT-SO400M-14-384", "openai/clip-vit-large-patch14-336", "facebook/dinov2-giant-res378", "clip-convnext-XXL-multi-stage"]' \
     --vision_tower_aux_token_len_list '[576, 576, 576, 9216]' \
     --image_token_len 576 \
@@ -27,7 +27,7 @@ torchrun --master_port=12345 --nproc_per_node=8 cambrian/train/train_mem.py \
     --mm_use_im_patch_token False \
     --image_aspect_ratio pad \
     --bf16 True \
-    --output_dir Your save path \
+    --output_dir ../cambrian_model/ \
     --num_train_epochs 1 \
     --per_device_train_batch_size 8 \
     --per_device_eval_batch_size 4 \
@@ -44,5 +44,7 @@ torchrun --master_port=12345 --nproc_per_node=8 cambrian/train/train_mem.py \
     --tf32 True \
     --model_max_length 2024 \
     --gradient_checkpointing True \
-    --dataloader_num_workers 8 \
-    --lazy_preprocess True 
+    --dataloader_num_workers 4 \
+    --lazy_preprocess True \
+    --report_to "wandb" \
+    --run_name "cambrian"
